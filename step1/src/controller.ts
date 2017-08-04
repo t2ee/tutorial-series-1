@@ -3,6 +3,7 @@ import {
     Path,
     Response,
     PathParam,
+    QueryParam,
 } from '@t2ee/vader';
 import {
     Component,
@@ -21,10 +22,20 @@ let LIST = [{
 export default class Controller {
     @GET
     @Path('/')
-    async getList(): Promise<Response> {
-        const response = new Response();
-        response.body = LIST;
-        return response;
+    async getList(@QueryParam('id') id): Promise<Response> {
+        if (id) {
+            id = parseInt(id);
+            const item = LIST.find(todo => todo.id === id);
+            if (item) {
+                const response = new Response();
+                response.body = item;
+                return response;    
+            }
+        } else {
+            const response = new Response();
+            response.body = LIST;
+            return response;
+        }
     }
 
     @GET
